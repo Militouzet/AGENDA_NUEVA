@@ -8,7 +8,7 @@ bool hayEspacio(sAgenda* miAgenda) {
  * @brief Función agregar contacto a la agenda
  * @return Error: ErrAgrEspacio, sino ExitoAgregar
  */
-/*eAgrContacto agregarContacto(sAgenda* miAgenda, sContacto miContacto) {
+eAgrContacto agregarContacto(sAgenda* miAgenda, sContacto miContacto) {
     if (!hayEspacio(miAgenda))
         return eAgrContacto::ErrAgrEspacio;
 
@@ -16,7 +16,7 @@ bool hayEspacio(sAgenda* miAgenda) {
     miAgenda->misContactos[miAgenda->CantContactos - 1] = miContacto;
     // miAgenda->*(misContactos + i )
     return eAgrContacto::ExitoAgregar;
-}*/
+}
 
 eAgrContacto agregarContacto(sAgenda* miAgenda, sContacto miContacto) {
     if (!hayEspacio(miAgenda)) {
@@ -188,9 +188,35 @@ void ListarPorGrupo(sAgenda miAgenda, sAgrupar*& Agrupados) {
     }
 }
 
+/**
+ * @brief Función eliminar grupo
+ */
+void removerGrupo(sAgenda* miAgenda,eGrupo grupo)
+{
+    sAgenda* aux = miAgenda;
 
+    for (u_int i = 0; i < miAgenda->CantMaxima; i++)
+    {
+        if (aux->misContactos[i].Grupo == grupo)
+        {
 
+            aux->misContactos[i] = ContactoNulo;
 
+        }
+    }
+
+}
+/**
+ * @brief Función de remover contacto por retorno por derecha
+ */
+eRmContacto removerContacto(sAgenda* miAgenda, u_int indexContacto, sContacto& contactoRemovido) {
+    if (indexContacto >= miAgenda->CantMaxima)
+        return eRmContacto::ErrRmIndex;
+
+    contactoRemovido = miAgenda->misContactos[indexContacto];
+    miAgenda->misContactos[indexContacto] = ContactoNulo;
+    return eRmContacto::ExitoRemover;
+}
 
 
 

@@ -39,6 +39,8 @@ eUpdContacto actualizarContacto(sAgenda* miAgenda, u_int indexContacto, sContact
 eRmContacto removerContacto(sAgenda* miAgenda, str Nombre, str Apellido);
 eRmContacto removerContacto(sAgenda* miAgenda, sContacto miContacto);
 eRmContacto removerContacto(sAgenda* miAgenda, u_int indexContacto);
+eRmContacto removerContacto(sAgenda* miAgenda, u_int indexContacto, sContacto& contactoRemovido);
+void removerGrupo(sAgenda* miAgenda,eGrupo grupo);
 
 /* Funciones de busqueda de contacto */
 sContacto buscarContacto(sAgenda* miAgenda, str valorBusqueda);

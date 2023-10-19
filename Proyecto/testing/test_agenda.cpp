@@ -223,3 +223,80 @@ TEST_CASE("Agenda Busqueda") {
     delete[] miAgenda->misContactos;
     delete miAgenda;
 }
+TEST_CASE("eliminar por Grupo") {
+    sAgenda* miAgenda = new sAgenda;
+    REQUIRE(miAgenda != nullptr);
+
+    miAgenda->CantMaxima = 6;
+    miAgenda->CantContactos = 0;
+    miAgenda->misContactos = new sContacto[miAgenda->CantMaxima];
+    REQUIRE(miAgenda->misContactos != nullptr);
+
+    {
+        agregarContacto(miAgenda, {"Juan", "Perez", "Calle 123", "juan@example.com", "123-456-7890", {5, 3, 1985}, eGrupo::AMIGO});
+        agregarContacto(miAgenda, {"Maria", "Gonzalez", "Avenida 456", "maria@example.com", "987-654-3210", {15, 11, 1992}, eGrupo::FAMILIA});
+        agregarContacto(miAgenda, {"Carlos", "Lopez", "Plaza 789", "carlos@example.com", "555-123-4567", {8, 7, 1980}, eGrupo::TRABAJO});
+        agregarContacto(miAgenda, {"Ana", "Martinez", "Calle 567", "ana@example.com", "111-222-3333", {20, 12, 1998}, eGrupo::AMIGO});
+        agregarContacto(miAgenda, {"Pedro", "Rodriguez", "Avenida 890", "pedro@example.com", "999-888-7777", {10, 4, 1987}, eGrupo::FAMILIA});
+        agregarContacto(miAgenda, {"Laura", "Lopez", "Plaza 123", "laura@example.com", "333-444-5555", {3, 9, 1995}, eGrupo::TRABAJO});
+    }
+
+    SECTION("Elimina el grupo FAMILIA") {
+        removerGrupo(miAgenda, eGrupo::FAMILIA);
+        // Verifica que los contactos del grupo FAMILIA se hayan eliminado correctamente
+        for (u_int i = 0; i< miAgenda->CantContactos; i++)
+        {
+            REQUIRE(miAgenda->misContactos[i].Grupo != eGrupo::FAMILIA);
+        }
+    }
+    SECTION("Elimina el grupo TRABAJO") {
+        removerGrupo(miAgenda, eGrupo::TRABAJO);
+        // Verifica que los contactos del grupo FAMILIA se hayan eliminado correctamente
+        for (u_int i = 0; i< miAgenda->CantContactos; i++)
+        {
+            REQUIRE(miAgenda->misContactos[i].Grupo != eGrupo::TRABAJO);
+        }
+    }
+    SECTION("Elimina el grupo UNIVERSIDAD") {
+        removerGrupo(miAgenda, eGrupo::UNIVERSIDAD);
+        // Verifica que los contactos del grupo FAMILIA se hayan eliminado correctamente
+        for (u_int i = 0; i< miAgenda->CantContactos; i++)
+        {
+            REQUIRE(miAgenda->misContactos[i].Grupo != eGrupo::UNIVERSIDAD);
+        }
+    }
+
+
+    delete[] miAgenda->misContactos;
+    delete miAgenda;
+}
+
+TEST_CASE("Remover contacto y obtenerlo")
+{
+        sAgenda miAgenda;
+        miAgenda.CantMaxima = 10;
+        miAgenda.CantContactos = 0;
+        miAgenda.misContactos = new sContacto[miAgenda.CantMaxima];
+        REQUIRE(miAgenda.misContactos != nullptr);
+
+        // Agrega algunos contactos a la agenda
+        agregarContacto(&miAgenda, {"Juan", "Perez", "Calle 123", "juan@example.com", "123-456-7890", {5, 3, 1985}, eGrupo::AMIGO});
+        agregarContacto(&miAgenda, {"Maria", "Gonzalez", "Avenida 456", "maria@example.com", "987-654-3210", {15, 11, 1992}, eGrupo::FAMILIA});
+        agregarContacto(&miAgenda, {"Pedro", "Lopez", "Plaza 789", "pedro@example.com", "555-123-4567", {8, 7, 1980}, eGrupo::TRABAJO});
+
+        sContacto contactoRemovido;
+        eRmContacto resultado = removerContacto(&miAgenda, 1, contactoRemovido);
+
+        SECTION("Verificar resultado de removerContacto") {
+            REQUIRE(resultado == eRmContacto::ExitoRemover);
+        }
+
+        SECTION("Verificar que el contacto eliminado es correcto") {
+            REQUIRE(contactoRemovido.Nombre == "Maria");
+            REQUIRE(contactoRemovido.Apellido == "Gonzalez");
+            // Agrega más verificaciones según tus datos
+        }
+
+        // Limpia la memoria
+        delete[] miAgenda.misContactos;
+    }
