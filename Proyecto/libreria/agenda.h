@@ -46,7 +46,7 @@ void removerGrupo(sAgenda* miAgenda,eGrupo grupo);
 sContacto buscarContacto(sAgenda* miAgenda, str valorBusqueda);
 sContacto buscarContacto(sAgenda* miAgenda, u_int indexContacto);
 void OrdenarPorApellido(sAgenda* miAgenda);
-sContacto* DevolverXGrupo(sAgenda miAgenda, eGrupo Grupo); //
+sContacto DevolverXGrupo(sAgenda miAgenda, eGrupo Grupo);
 void ListarPorGrupo(sAgenda miAgenda, sAgrupar*& Agrupados);
 
 #endif // AGENDA_H

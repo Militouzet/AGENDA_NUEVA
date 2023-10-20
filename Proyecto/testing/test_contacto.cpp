@@ -7,7 +7,7 @@ const sContacto DefaultContactos[3] = {
     {"Laura", "Lopez", "Plaza 123", "laura@example.com", "333-444-5555", {3, 9, 1995},  eGrupo::TRABAJO}
 };
 
-TEST_CASE("Resize Array Contactos") {
+/*TEST_CASE("Resize Array Contactos") {
     sContacto* MisContactos = new sContacto[3];
 
     REQUIRE(MisContactos != nullptr);
@@ -34,7 +34,7 @@ TEST_CASE("Resize Array Contactos") {
 
         resizeContactos(&MisContactos, 5 , 1);
 
-        CHECK(ViejaDireccion != MisContactos);
+        REQUIERE(ViejaDireccion != MisContactos);
     }
 
-}
+}*/

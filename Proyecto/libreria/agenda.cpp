@@ -18,7 +18,7 @@ eAgrContacto agregarContacto(sAgenda* miAgenda, sContacto miContacto) {
     return eAgrContacto::ExitoAgregar;
 }
 
-eAgrContacto agregarContacto(sAgenda* miAgenda, sContacto miContacto) {
+/*eAgrContacto agregarContacto(sAgenda* miAgenda, sContacto miContacto) {
     if (!hayEspacio(miAgenda)) {
 
     }
@@ -163,7 +163,7 @@ void OrdenarPorApellido(sAgenda* miAgenda) {
     }
 }
 
-void ListarPorGrupo(sAgenda miAgenda, sAgrupar*& Agrupados) {
+/*void ListarPorGrupo(sAgenda miAgenda, sAgrupar*& Agrupados) {
     Agrupados = new sAgrupar[5];
     for(u_int i = 0; i < eGrupo::UNIVERSIDAD; i++) {
         Agrupados[i].contactos = new sContacto[6];
@@ -186,7 +186,7 @@ void ListarPorGrupo(sAgenda miAgenda, sAgrupar*& Agrupados) {
             }
         }
     }
-}
+}/*
 
 /**
  * @brief Función eliminar grupo
@@ -217,8 +217,64 @@ eRmContacto removerContacto(sAgenda* miAgenda, u_int indexContacto, sContacto& c
     miAgenda->misContactos[indexContacto] = ContactoNulo;
     return eRmContacto::ExitoRemover;
 }
+/**
+ * @brief Función de imprimir todos los integrantes de un grupo
+ */
+sContacto DevolverXGrupo(sAgenda* miAgenda, eGrupo Grupo)
+{
+    int cont=0;
+    for(u_int i=0; i<miAgenda->CantContactos;i++)
+    {
+        if(miAgenda->misContactos[i].Grupo==Grupo)
+        {
+            cont++;
 
+        }
+    }
+    sContacto resultado[cont];
+    for(u_int i=0; i<miAgenda->CantContactos;i++)
+    {
+        if(miAgenda->misContactos[i].Grupo==Grupo)
+        {
+            resultado[i]=miAgenda->misContactos[i];
+        }
+    }
+    return resultado[cont];
+}
+/**
+ * @brief Función de Agregar contacto ordenado
+ */
+void agregarContactoOrdenado(Contacto miAgenda[], int& CantContactos, const Contacto& nuevoContacto) {
+    int pos = CantContactos;
+    while (pos > 0 && nuevoContacto.Apellido < miAgenda[pos - 1].Apellido) {
+        miAgenda[pos] = miAgenda[pos - 1];
+        pos--;
+    }
+    miAgenda[pos] = nuevoContacto;
+    CantContactos++;
+}
+/**
+ * @brief Función de listar por grupo
+ */
+void ListarPorGrupo(const sAgenda& miAgenda, sAgrupar*& Agrupados) {
+    const int CANT_GRUPOS = 5;
+    Agrupados = new sAgrupar[CANT_GRUPOS];
 
+    for (int i = 0; i < CANT_GRUPOS; i++) {
+        Agrupados[i].contactos = new sContacto[miAgenda.CantContactos];
+        Agrupados[i].tam = miAgenda.CantContactos;
+        Agrupados[i].actual = 0;
+        Agrupados[i].Grupito = Grupos[i];
+    }
 
+    for (u_int i = 0; i < miAgenda.CantContactos; i++) {
+        for (u_int j = 0; j < miAgenda.CantContactos; j++) {
+            if (miAgenda.misContactos[j].Grupo == i) {
+                Agrupados[i].contactos[Agrupados[i].actual] = miAgenda.misContactos[j];
+                Agrupados[i].actual++;
+            }
+        }
+    }
+}
 
 
