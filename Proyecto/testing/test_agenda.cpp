@@ -270,7 +270,8 @@ TEST_CASE("eliminar por Grupo") {
     delete[] miAgenda->misContactos;
     delete miAgenda;
 };
-TEST_CASE("imprimir integrantes de un grupo") {
+
+TEST_CASE("Agregar Ordenado por Apellido") {
     sAgenda* miAgenda = new sAgenda;
     REQUIRE(miAgenda != nullptr);
 
@@ -279,32 +280,6 @@ TEST_CASE("imprimir integrantes de un grupo") {
     miAgenda->misContactos = new sContacto[miAgenda->CantMaxima];
     REQUIRE(miAgenda->misContactos != nullptr);
 
-    {
-        agregarContacto(miAgenda, {"Juan", "Perez", "Calle 123", "juan@example.com", "123-456-7890", {5, 3, 1985}, eGrupo::AMIGO});
-        agregarContacto(miAgenda, {"Maria", "Gonzalez", "Avenida 456", "maria@example.com", "987-654-3210", {15, 11, 1992}, eGrupo::FAMILIA});
-        agregarContacto(miAgenda, {"Carlos", "Lopez", "Plaza 789", "carlos@example.com", "555-123-4567", {8, 7, 1980}, eGrupo::TRABAJO});
-        agregarContacto(miAgenda, {"Ana", "Martinez", "Calle 567", "ana@example.com", "111-222-3333", {20, 12, 1998}, eGrupo::AMIGO});
-        agregarContacto(miAgenda, {"Pedro", "Rodriguez", "Avenida 890", "pedro@example.com", "999-888-7777", {10, 4, 1987}, eGrupo::FAMILIA});
-        agregarContacto(miAgenda, {"Laura", "Lopez", "Plaza 123", "laura@example.com", "333-444-5555", {3, 9, 1995}, eGrupo::TRABAJO});
-    }
-
-    SECTION("imprime al grupo AMIGO") {
-        sContacto aux[miAgenda->CantMaxima]=DevolverXGrupo(miAgenda, eGrupo::AMIGO);
-        //verifico que los contactos guardados en el aux sean los del grupo AMIGO
-        REQUIRE(aux[0].Nombre==miAgenda->misContactos[0].Nombre);
-    }
-};
-TEST_CASE("ListarPorGrupo") {
-    // Crear una agenda de prueba con contactos
-    sAgenda* miAgenda = new sAgenda;
-    REQUIRE(miAgenda != nullptr);
-
-    miAgenda->CantMaxima = 6;
-    miAgenda->CantContactos = 6;
-    miAgenda->misContactos = new sContacto[miAgenda->CantMaxima];
-    REQUIRE(miAgenda->misContactos != nullptr);
-
-    // Agregar contactos a la agenda
     agregarContacto(miAgenda, {"Juan", "Perez", "Calle 123", "juan@example.com", "123-456-7890", {5, 3, 1985}, eGrupo::AMIGO});
     agregarContacto(miAgenda, {"Maria", "Gonzalez", "Avenida 456", "maria@example.com", "987-654-3210", {15, 11, 1992}, eGrupo::FAMILIA});
     agregarContacto(miAgenda, {"Carlos", "Lopez", "Plaza 789", "carlos@example.com", "555-123-4567", {8, 7, 1980}, eGrupo::TRABAJO});
@@ -312,23 +287,57 @@ TEST_CASE("ListarPorGrupo") {
     agregarContacto(miAgenda, {"Pedro", "Rodriguez", "Avenida 890", "pedro@example.com", "999-888-7777", {10, 4, 1987}, eGrupo::FAMILIA});
     agregarContacto(miAgenda, {"Laura", "Lopez", "Plaza 123", "laura@example.com", "333-444-5555", {3, 9, 1995}, eGrupo::TRABAJO});
 
-    // Llamar a la función ListarPorGrupo para agrupar los contactos
-    sAgrupar* Agrupados;
-    ListarPorGrupo(*miAgenda, Agrupados);
 
-    // Verificar que los contactos se agruparon correctamente
-    for (int i = 0; i < 5; i++) {
-        REQUIRE(Agrupados[i].Grupito == i);
-        for (u_int j = 0; j < Agrupados[i].actual; j++) {
-            REQUIRE(Agrupados[i].contactos[j].Grupo == i);
-        }
+    sContacto miContacto = {"Bautista", "Zapata", "Calle 224", "zapata@example.com", "345-222-7888", {16, 1, 1982}, eGrupo::AMIGO};
+
+    eAgrContacto resultado = agregarOrdenadoApellido(miAgenda, miContacto);
+
+    SECTION("VERIFICO SI SE AGREGO CORRECTAMENTE") {
+        REQUIRE(resultado == eAgrContacto::ExitoAgregar);
     }
 
-    // Liberar memoria
-    for (int i = 0; i < CANT_GRUPOS; i++) {
-        delete[] Agrupados[i].contactos;
+    SECTION("VERIFICO SI BAUTISTA ES EL ULTIMO EN LA LISTA") {
+        REQUIRE(miAgenda->misContactos[miAgenda->CantContactos - 1].Apellido== miContacto.Apellido);
     }
-    delete[] Agrupados;
     delete[] miAgenda->misContactos;
     delete miAgenda;
 };
+TEST_CASE("Imprimir lista de grupos con los contactos que los integran") {
+    sAgenda* miAgenda = new sAgenda;
+    REQUIRE(miAgenda != nullptr);
+
+    miAgenda->CantMaxima = 6;
+    miAgenda->CantContactos = 0;
+    miAgenda->misContactos = new sContacto[miAgenda->CantMaxima];
+    REQUIRE(miAgenda->misContactos != nullptr);
+
+    agregarContacto(miAgenda, {"Juan", "Perez", "Calle 123", "juan@example.com", "123-456-7890", {5, 3, 1985}, eGrupo::AMIGO});
+    agregarContacto(miAgenda, {"Maria", "Gonzalez", "Avenida 456", "maria@example.com", "987-654-3210", {15, 11, 1992}, eGrupo::FAMILIA});
+    agregarContacto(miAgenda, {"Carlos", "Lopez", "Plaza 789", "carlos@example.com", "555-123-4567", {8, 7, 1980}, eGrupo::TRABAJO});
+    agregarContacto(miAgenda, {"Ana", "Martinez", "Calle 567", "ana@example.com", "111-222-3333", {20, 12, 1998}, eGrupo::AMIGO});
+    agregarContacto(miAgenda, {"Pedro", "Rodriguez", "Avenida 890", "pedro@example.com", "999-888-7777", {10, 4, 1987}, eGrupo::FAMILIA});
+    agregarContacto(miAgenda, {"Laura", "Lopez", "Plaza 123", "laura@example.com", "333-444-5555", {3, 9, 1995}, eGrupo::TRABAJO});
+
+    sAgrupar* Agrupados;
+    REQUIRE(Agrupados != nullptr);
+
+    ListarPorGrupo(miAgenda, Agrupados);
+
+    SECTION("VERIFICO SI SE AGRUPARON CORRECTAMENTE") {
+        for (u_int i = 0; i < eGrupo::UNIVERSIDAD; i++) {
+            int count = 0;
+            for (u_int j = 0; j < Agrupados[i].actual; j++) {
+                if (Agrupados[i].contactos[j].Grupo == i) {
+                    count++;
+                }
+            }
+            REQUIRE(count == Agrupados[i].actual);
+        }
+    }
+}
+
+    delete[] miAgenda->misContactos;
+    delete miAgenda;
+
+};
+
