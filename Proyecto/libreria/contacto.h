@@ -30,7 +30,7 @@ struct Agrupar {
 
 sContacto crearContacto(str Nombre, str Apellido, sFecha FacNac, str Telefono, str Correo);
 sContacto* resizeContactos(sContacto* miLista, u_int tam, u_int nuevoTam);
-void resizeContactos(sContacto** miLista, u_int tam, u_int nuevoTam);
+void resizeContacto(sContacto*& miLista, u_int tam, u_int nuevoTam);
 
 #endif // CONTACTO_H
 

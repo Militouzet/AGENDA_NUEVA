@@ -179,7 +179,7 @@ void ListarPorGrupo(sAgenda miAgenda, sAgrupar*& Agrupados) {
         for(sContacto* miContacto = miAgenda.misContactos; miContacto != Ultimo; miContacto++) {
             if(miContacto->Grupo == i) {
                 if(Agrupados[i].actual == Agrupados[i].tam) {
-                    Agrupados[i].contactos = resizeContactos(Agrupados[i].contactos, Agrupados[i].tam, Agrupados[i].tam + BLK);
+                    //resizeContactos(Agrupados[i].contactos, Agrupados[i].tam, Agrupados[i].tam + BLK);
                     Agrupados[i].tam += BLK;
                 }
 
@@ -222,70 +222,85 @@ eRmContacto removerContacto(sAgenda* miAgenda, u_int indexContacto, sContacto& c
 /**
  * @brief Función de imprimir todos los integrantes de un grupo
  */
-sContacto DevolverXGrupo(sAgenda* miAgenda,eGrupo Grupo)
-{
+sContacto* devolverXGrupo(sAgenda* miAgenda,eGrupo Grupo){
+
     int cont=0;
-    int i;
-    while(true)
-    {
-        if(miAgenda->misContactos[i].Grupo==Grupo)
-        {
+
+    for(u_int i=0;i< miAgenda->CantContactos;i++){
+        if( miAgenda->misContactos[i].Grupo== Grupo){
             cont++;
         }
-        i++;
     }
 
-    sContacto*aux=new sContacto[cont];
+    sContacto* aux=new sContacto[cont];
+    int j=0;
 
-
-    while(true)
-    {
-        if(miAgenda->misContactos[i].Grupo==Grupo)
-        {
-            aux[i]=miAgenda->misContactos[i];
-
+    for(u_int i=0;i< miAgenda->CantContactos;i++){
+        if(miAgenda->misContactos[i].Grupo== Grupo){
+            aux[j]= miAgenda->misContactos[i];
+            j++;
         }
-        aux++;
     }
 
-    return aux [cont];
+    return aux;
 }
+void OrdenarPorApellidop(sAgenda* miAgenda){
+    sContacto aux;
+    int cont=0;
+    for(u_int i=0;i<miAgenda->CantContactos;i++)
+    {
+        for(u_int j=0;j<miAgenda->CantContactos;j++)
+        {
+            if(miAgenda->misContactos[j].Apellido[0]<
+                miAgenda->misContactos[j+1].Apellido[0])
+            {
+                aux=miAgenda->misContactos[j];
+                miAgenda->misContactos[j]=miAgenda->misContactos[j+1];
+                miAgenda->misContactos[j+1]=aux;
+                cont++;
+            }
+        }
+        if(cont==0)
+            break;
+    }
 
-
+}
 
 /**
  * @brief Función de Agregar contacto ordenado por apellido
  *return: ExitoAgregar ErrAgrEspacio
  */
 
-eAgrContacto agregarOrdenadoApellido(sAgenda* miAgenda, sContacto miContacto)
-{
+eAgrContacto agregarOrdenadoApellido(sAgenda* miAgenda, sContacto miContacto) {
+    u_int pos = 0;
+    OrdenarPorApellidop(miAgenda);
 
-    u_int pos;
-    pos=0;
-    OrdenarPorApellido(miAgenda);
-    if(!hayEspacio(miAgenda))
-        return eAgrContacto::ErrAgrEspacio;
-    miAgenda->CantContactos++;
-    while(pos<miAgenda->CantContactos && miAgenda->misContactos[pos].Apellido[0] <= miContacto.Apellido[0])
-    {
-        for(u_int i=0;i<miAgenda->CantContactos;i++)
-            {
-                if(miAgenda->misContactos[i].Apellido>miContacto.Apellido && miAgenda->misContactos[i+1].Apellido
-                                                                                <miContacto.Apellido)
-                {
-                    pos=i;
-                }
-            }
+    if(!hayEspacio(miAgenda)) {
+        resizeContacto(miAgenda->misContactos, miAgenda->CantContactos, miAgenda->CantContactos + 1);
+        miAgenda->CantMaxima++;
     }
 
+    for(u_int i=0;i<miAgenda->CantContactos;i++)
+    {
+        if(miAgenda->misContactos[i].Apellido[0]>=miContacto.Apellido[0] && miAgenda->misContactos[i+1].Apellido[0] <= miContacto.Apellido[0]) // posicion de inserccio
+        {
+            pos=i;
+        }
+    }
+
+    sContacto ultimo=miAgenda->misContactos[miAgenda->CantContactos-1];
     for(u_int i=pos; i<miAgenda->CantContactos;i++)
     {
         miAgenda->misContactos[i+1]=miAgenda->misContactos[i];
     }
+
     miAgenda->misContactos[pos]=miContacto;
+    miAgenda->misContactos[miAgenda->CantContactos]=ultimo;
+
     return eAgrContacto::ExitoAgregar;
 }
+
+
 
 
 

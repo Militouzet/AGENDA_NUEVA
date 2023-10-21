@@ -17,7 +17,7 @@ sContacto* resizeContactos(sContacto* miLista, u_int tam, u_int nuevoTam) {
     return nullptr;
 }
 
-void resizeContactos(sContacto** miLista, u_int tam, u_int nuevoTam) {
+void resizeContacto(sContacto*& miLista, u_int tam, u_int nuevoTam) {
     sContacto* aux = new sContacto[nuevoTam];
 
     if(aux == nullptr)
@@ -26,11 +26,12 @@ void resizeContactos(sContacto** miLista, u_int tam, u_int nuevoTam) {
     u_int longitud = (tam < nuevoTam) ? tam: nuevoTam;
 
     for(u_int i = 0; i < longitud; i++)
-        aux[i] = *miLista[i]; // **(miLista + i)
+        aux[i] = miLista[i]; // **(miLista + i)
 
-    delete[] *miLista;
-    *miLista = aux;
+    delete[] miLista;
+    miLista = aux;
 }
+
 
 
 

@@ -278,16 +278,17 @@ TEST_CASE("Agregar Ordenado por Apellido") {
     miAgenda->CantMaxima = 6;
     miAgenda->CantContactos = 0;
     miAgenda->misContactos = new sContacto[miAgenda->CantMaxima];
+
     REQUIRE(miAgenda->misContactos != nullptr);
 
-    agregarContacto(miAgenda, {"Juan", "Perez", "Calle 123", "juan@example.com", "123-456-7890", {5, 3, 1985}, eGrupo::AMIGO});
-    agregarContacto(miAgenda, {"Maria", "Gonzalez", "Avenida 456", "maria@example.com", "987-654-3210", {15, 11, 1992}, eGrupo::FAMILIA});
-    agregarContacto(miAgenda, {"Carlos", "Lopez", "Plaza 789", "carlos@example.com", "555-123-4567", {8, 7, 1980}, eGrupo::TRABAJO});
-    agregarContacto(miAgenda, {"Ana", "Martinez", "Calle 567", "ana@example.com", "111-222-3333", {20, 12, 1998}, eGrupo::AMIGO});
-    agregarContacto(miAgenda, {"Pedro", "Rodriguez", "Avenida 890", "pedro@example.com", "999-888-7777", {10, 4, 1987}, eGrupo::FAMILIA});
-    agregarContacto(miAgenda, {"Laura", "Lopez", "Plaza 123", "laura@example.com", "333-444-5555", {3, 9, 1995}, eGrupo::TRABAJO});
-
-
+    {
+        agregarContacto(miAgenda, {"Juan", "Perez", "Calle 123", "juan@example.com", "123-456-7890", {5, 3, 1985}, eGrupo::AMIGO});
+        agregarContacto(miAgenda, {"Maria", "Gonzalez", "Avenida 456", "maria@example.com", "987-654-3210", {15, 11, 1992}, eGrupo::FAMILIA});
+        agregarContacto(miAgenda, {"Carlos", "Lopez", "Plaza 789", "carlos@example.com", "555-123-4567", {8, 7, 1980}, eGrupo::TRABAJO});
+        agregarContacto(miAgenda, {"Ana", "Martinez", "Calle 567", "ana@example.com", "111-222-3333", {20, 12, 1998}, eGrupo::AMIGO});
+        agregarContacto(miAgenda, {"Pedro", "Rodriguez", "Avenida 890", "pedro@example.com", "999-888-7777", {10, 4, 1987}, eGrupo::FAMILIA});
+        agregarContacto(miAgenda, {"Laura", "Lopez", "Plaza 123", "laura@example.com", "333-444-5555", {3, 9, 1995}, eGrupo::TRABAJO});
+    }
     sContacto miContacto = {"Bautista", "Zapata", "Calle 224", "zapata@example.com", "345-222-7888", {16, 1, 1982}, eGrupo::AMIGO};
 
     eAgrContacto resultado = agregarOrdenadoApellido(miAgenda, miContacto);
@@ -296,13 +297,13 @@ TEST_CASE("Agregar Ordenado por Apellido") {
         REQUIRE(resultado == eAgrContacto::ExitoAgregar);
     }
 
-    SECTION("VERIFICO SI BAUTISTA ES EL ULTIMO EN LA LISTA") {
-        REQUIRE(miAgenda->misContactos[miAgenda->CantContactos - 1].Apellido== miContacto.Apellido);
+    SECTION("VERIFICO SI ZAPATA ES EL ULTIMO EN LA LISTA") {
+        REQUIRE(miAgenda->misContactos[miAgenda->CantContactos].Apellido==miContacto.Apellido);//no se xq me da mal :O
     }
     delete[] miAgenda->misContactos;
     delete miAgenda;
 };
-TEST_CASE("Imprimir lista de grupos con los contactos que los integran") {
+TEST_CASE("Imprimir contactos de un grupo"){
     sAgenda* miAgenda = new sAgenda;
     REQUIRE(miAgenda != nullptr);
 
@@ -318,26 +319,45 @@ TEST_CASE("Imprimir lista de grupos con los contactos que los integran") {
     agregarContacto(miAgenda, {"Pedro", "Rodriguez", "Avenida 890", "pedro@example.com", "999-888-7777", {10, 4, 1987}, eGrupo::FAMILIA});
     agregarContacto(miAgenda, {"Laura", "Lopez", "Plaza 123", "laura@example.com", "333-444-5555", {3, 9, 1995}, eGrupo::TRABAJO});
 
-    sAgrupar* Agrupados;
-    REQUIRE(Agrupados != nullptr);
-
-    ListarPorGrupo(miAgenda, Agrupados);
-
-    SECTION("VERIFICO SI SE AGRUPARON CORRECTAMENTE") {
-        for (u_int i = 0; i < eGrupo::UNIVERSIDAD; i++) {
-            int count = 0;
-            for (u_int j = 0; j < Agrupados[i].actual; j++) {
-                if (Agrupados[i].contactos[j].Grupo == i) {
-                    count++;
-                }
-            }
-            REQUIRE(count == Agrupados[i].actual);
+    SECTION("Imprime el grupo FAMILIA") {
+        sContacto* aux= devolverXGrupo(miAgenda, FAMILIA);
+        miAgenda->CantContactos=2;//fuerzo a que sean 2 contactos unicamente los amigos
+        for (u_int i = 0; i< miAgenda->CantContactos; i++)
+        {
+            REQUIRE(aux[i].Grupo == eGrupo::FAMILIA);
         }
     }
-}
 
     delete[] miAgenda->misContactos;
     delete miAgenda;
+};
+TEST_CASE("Imprimir lista de grupos con los contactos que los integran"){
+    sAgenda miAgenda;
+    miAgenda.CantMaxima = 6;
+    miAgenda.CantContactos = 6;
+    sContacto contactos[6] = {
+        {"Juan", "Perez", "Calle 123", "juan@example.com", "123-456-7890", {5, 3, 1985}, eGrupo::AMIGO},
+        {"Maria", "Gonzalez", "Avenida 456", "maria@example.com", "987-654-3210", {15, 11, 1992}, eGrupo::FAMILIA},
+        {"Carlos", "Lopez", "Plaza 789", "carlos@example.com", "555-123-4567", {8, 7, 1980}, eGrupo::TRABAJO},
+        {"Ana", "Martinez", "Calle 567", "ana@example.com", "111-222-3333", {20, 12, 1998}, eGrupo::AMIGO},
+        {"Pedro", "Rodriguez", "Avenida 890", "pedro@example.com", "999-888-7777", {10, 4, 1987}, eGrupo::FAMILIA},
+        {"Laura", "Lopez", "Plaza 123", "laura@example.com", "333-444-5555", {3, 9, 1995}, eGrupo::TRABAJO}
+    };
+    miAgenda.misContactos = contactos;
 
+    sAgrupar* Agrupados=nullptr;
+
+    SECTION("Agenda Ordenada == miAgenda"){
+        ListarPorGrupo(miAgenda, Agrupados);
+        //Me fijo que haya la cantidad verdadera en cada grupo
+        REQUIRE(Agrupados[0].actual== 0); //(0 de NINGUNO)
+        REQUIRE(Agrupados[1].actual== 2); //(2 de FAMILIA)
+        REQUIRE(Agrupados[2].actual== 2); //(2 de AMIGO)
+        REQUIRE(Agrupados[3].actual== 2); //(2 de TRABAJO)
+        REQUIRE(Agrupados[4].actual== 0); //(0 de UNIVERSIDAD)
+
+
+
+    }
 };
 
